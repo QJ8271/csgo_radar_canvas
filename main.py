@@ -156,10 +156,6 @@ Serve root index file
 def index():
     return render_template('index.html')
 
-@app.route('/radar')
-def radar():
-    return render_template('radar.html')
-
 """
 Decorator for connect
 """
