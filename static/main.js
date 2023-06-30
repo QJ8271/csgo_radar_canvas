@@ -205,7 +205,7 @@ socket.on("updateData", function (event) {
     ctx.drawImage(image, -local_x, -local_y,  image_scale,  image_scale);
     ctx.globalCompositeOperation = "destination-in";
 
-      // draw our circle mask
+    // draw our circle mask
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.arc(
@@ -216,11 +216,12 @@ socket.on("updateData", function (event) {
         2 * Math.PI // end angle
     );
     ctx.fill();
+    
 
       // restore to default composite operation (is draw over current image)
     ctx.globalCompositeOperation = "source-over";
-
     canvas.hidden = false
+
     
     const now_ms = new Date().getTime();
     clearEnemyList();
