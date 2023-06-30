@@ -1,4 +1,4 @@
-import logging, sys, ctypes,json
+import logging, sys, ctypes
 sys.path.append("..")
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
@@ -42,13 +42,9 @@ def main_game_thread():
     
     while True:
         
-        socketio.sleep(0.0025) 
+        socketio.sleep(0.02) 
         engine = Engine()
         if engine.is_in_game():
-            try:
-                x = engine.get_view_angle()
-            except Exception as e:
-                print(e)
             if not previously_in_game:
                 log("[+] Game started!")
                 previously_in_game = True
@@ -75,7 +71,7 @@ def main_game_thread():
 
                 isLocalPlayer = player.address == localPlayer.address
 
-                is_dormant = player.is_dormant()
+                #is_dormant = player.is_dormant()
 
                 name = str(memory.read(engine.get_player_info(index) + 0x10, ctypes.create_string_buffer(128)))
                 steam_id = str(memory.read(engine.get_player_info(index) + 0x94, ctypes.create_string_buffer(20)))
@@ -84,11 +80,6 @@ def main_game_thread():
                 if steam_id == "BOT":
                     name = ' '.join([steam_id, name])
                     steam_id = name
-
-                try:
-                    weapon_id = player.get_weapon_id()
-                except NullPointerError:
-                    weapon_id = 0
 
                 team = player.get_team_number()
 
@@ -103,9 +94,8 @@ def main_game_thread():
                         team=team,
                         health=health,
                         position=position,
-                        weapon_id=weapon_id,
-                        isLocalPlayer=isLocalPlayer,
-                        is_dormant=is_dormant
+                        isLocalPlayer=isLocalPlayer
+                        #is_dormant=is_dormant
                     )
                 
                 if steam_id not in players.keys():
@@ -120,8 +110,7 @@ def main_game_thread():
                     players[steam_id].name = name
                     players[steam_id].team = packet_player.team
                     players[steam_id].position = packet_player.position
-                    players[steam_id].weapon_id = weapon_id
-                    players[steam_id].is_dormant = is_dormant
+                    #players[steam_id].is_dormant = is_dormant
 
                     if previous_player.dict() != players[steam_id].dict():
                         #log("[+] Player updated: 0x%X, health: %d, position: %s, name: %s" % (

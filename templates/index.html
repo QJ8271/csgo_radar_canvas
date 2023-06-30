@@ -12,7 +12,7 @@
 <body style="background-color:black">
     <div class="container" style="float:left;">
          <div class="row">       
-         <h2> Filters </h2>   
+         <h2> Change Map </h2>   
             <div class = "col-md-3">
                 <div>
                     <select  class="form-select" aria-label="Default select example" name="metric" id="metric">
@@ -36,8 +36,7 @@
         </div>
         <div class="row">
             <div class= "col-md-6">
-                <h2> Radar</h2>
-                <canvas id="radar" width="600" height="600" style="z-index:1000;position:relative;"></canvas>  
+                <canvas id="radar" width="600" height="600" style="z-index:1000;text-align:center;padding-left: 50%;"></canvas>  
             </div>
         </div>
         <div class="row">
@@ -71,12 +70,6 @@
                   <input class="form-check-input" type="checkbox" value=true id="health_radio" checked>
                   <label class="form-check-label" for="health_radio">
                     Health on radar
-                  </label>
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" value=true id="weapon_radio" checked>
-                  <label class="form-check-label" for="weapon_radio">
-                    Weapon on radar
                   </label>
                 </div>
             </div>

@@ -25,7 +25,7 @@ class Player:
     def get_shots_fired(self):
         return memory.read_ptr(self.address + offsets.m_iShotsFired)
 
-    def get_weapon(self):
+    """def get_weapon(self):
         #: bugs sometimes
 
         a0 = memory.read_ptr(self.address + offsets.m_hActiveWeapon)
@@ -33,7 +33,7 @@ class Player:
 
     def get_weapon_id(self):
         return memory.read_ptr(self.get_weapon() + offsets.m_iItemDefinitionIndex)
-
+    """
     def get_team_number(self):
         return int(memory.read_ptr(self.address + offsets.m_iTeamNum, ignore_null=True))
 

@@ -19,10 +19,10 @@ var dropdown = document.getElementById("metric");
 var map_style = document.getElementById("map_style");
 
 
-function addenemy (name, health, weapon) {
+function addenemy (name, health) {
     let enemy_list = document.getElementById('enemy_list');
     let li = document.createElement('li');
-    li.textContent = name + " | " + weapon;
+    li.textContent = name
     li.setAttribute("class", "list-group-item");
 
     let progress = document.createElement('div');
@@ -104,7 +104,7 @@ function draw_local_entity(ang){
     ctx.closePath();
 }
 
-function draw_entity(x, y, health, r, g, b, a, weapon, local_yaw, name) {
+function draw_entity(x, y, health, r, g, b, a, local_yaw, name) {
     ctx.beginPath();
     ctx.arc(x, y, player_dot_size, 0, 2 * Math.PI, false)
 
@@ -122,9 +122,6 @@ function draw_entity(x, y, health, r, g, b, a, weapon, local_yaw, name) {
     }
     if(health_radio.checked){
         ctx.fillText(health, 5, 20);
-    }
-    if(weapon_radio.checked){
-        ctx.fillText(weapon, 5, -30);
     }
     ctx.restore();
 }
@@ -239,7 +236,6 @@ socket.on("updateData", function (event) {
                         mapped_y,
                         player.health,
                         col_red, col_green, col_blue, 255,
-                        player.weapon_id,
                         local_yaw,
                         player.name);
             addenemy(player.name, player.health, player.weapon);
