@@ -1,7 +1,7 @@
 const canvas = document.getElementById("radar");
 const ctx = canvas.getContext("2d");
 const map = document.getElementById("map");
-const base_data_path = "static/data";
+const base_data_path = "/static/data";
 
 // radar images are 1024x1024, we are scaling them down to 512x512
 let ratio = 0.5;
