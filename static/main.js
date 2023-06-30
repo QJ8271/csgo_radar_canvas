@@ -1,7 +1,7 @@
 const canvas = document.getElementById("radar");
 const ctx = canvas.getContext("2d");
 const map = document.getElementById("map");
-const base_data_path = "/data";
+const base_data_path = "static/data";
 
 // radar images are 1024x1024, we are scaling them down to 512x512
 let ratio = 0.5;
@@ -19,11 +19,10 @@ var dropdown = document.getElementById("metric");
 var map_style = document.getElementById("map_style");
 
 
-function addenemy (name, health, weapon, last_place) {
+function addenemy (name, health, weapon) {
     let enemy_list = document.getElementById('enemy_list');
-   // create new li element
     let li = document.createElement('li');
-    li.textContent = name + " | " + weapon + " | " + last_place;
+    li.textContent = name + " | " + weapon;
     li.setAttribute("class", "list-group-item");
 
     let progress = document.createElement('div');
@@ -83,9 +82,9 @@ function update_map_data(map_name){
     let maps = {'de_dust2':[-2476,3239,4.4] ,'de_inferno': [-2087,3870,4.9],
                 'de_vertigo':[-3168,1762,4], 'de_nuke': [-3453, 2887, 7],
                 'de_mirage':[-3230, 1713, 5]}
-    pos_x = maps[map_name][0]
-    pos_y = maps[map_name][1]
-    scale = maps[map_name][2]
+    pos_x = maps[map_name][0];
+    pos_y = maps[map_name][1];
+    scale = maps[map_name][2];
 }
 
 function update_radar_scale() {
@@ -96,16 +95,16 @@ function update_player_scale() {
 	player_dot_size =  document.getElementById("player_dot_size").value;
 }
 
-    function draw_local_entity(ang){
-        ctx.beginPath();
-            ctx.arc(0, 0, player_dot_size, 0, 2 * Math.PI, false)
-            ctx.fillStyle = `rgb(${ 0 }, ${ 255 }, ${ 255 }, ${ 255 })`;
-            ctx.fill();
-        draw_arrow(0, 0, ang)
-        ctx.closePath();
-    }
+function draw_local_entity(ang){
+    ctx.beginPath();
+    ctx.arc(0, 0, player_dot_size, 0, 2 * Math.PI, false)
+    ctx.fillStyle = `rgb(${ 0 }, ${ 255 }, ${ 255 }, ${ 255 })`;
+    ctx.fill();
+    draw_arrow(0, 0, ang)
+    ctx.closePath();
+}
 
-function draw_entity(x, y, health, last_place, r, g, b, a, weapon, ang, local_player, local_x, local_y, name) {
+function draw_entity(x, y, health, r, g, b, a, weapon, local_yaw, name) {
     ctx.beginPath();
     ctx.arc(x, y, player_dot_size, 0, 2 * Math.PI, false)
 
@@ -114,7 +113,7 @@ function draw_entity(x, y, health, last_place, r, g, b, a, weapon, ang, local_pl
 
     ctx.save();
     ctx.translate(x, y);
-    ctx.rotate((-local_player["angle_y"] + 90) * Math.PI / 180);
+    ctx.rotate((-local_yaw + 90) * Math.PI / 180);
     ctx.textAlign = "center";
     ctx.fillStyle = "white";
     ctx.font = "bold 12px Verdana";
@@ -127,12 +126,7 @@ function draw_entity(x, y, health, last_place, r, g, b, a, weapon, ang, local_pl
     if(weapon_radio.checked){
         ctx.fillText(weapon, 5, -30);
     }
-    if(defusing){
-        ctx.fillText("DEFUSING", 10, 0);
-    }
     ctx.restore();
-   
-    draw_arrow(x, y, ang)
 }
 
 function draw_arrow(x, y, ang){
@@ -171,6 +165,7 @@ function clearEnemyList() {
 
 image = new Image();
 image.src = base_data_path + '/maps/de_dust2/radar.png';
+let players = [];
 let healths = [];
 let x_positions = [];
 let y_positions = [];
@@ -179,44 +174,41 @@ let local_y = 0;
 let weapons = [];
 let ang_ys = [];
 let local_player;
-let enemy_list = [];
 let image_scale = 512;
+let local_team;
+let local_yaw;
 
 var socket = io.connect();
 socket.on("updateData", function (event) {
     const obj = JSON.parse(event.data);
-    const map_name = obj.map.name;
-    for(const i in obj.players){
-        if (obj.player.isLocalPlayer) {
-        local_player = i
+    local_yaw = event.local_yaw;
+    if (obj.map !== null){
+        const map_name = obj.map.name;
+        update_map_data(map_name);
+    }
+    if (obj.players !== null){
+        for (let player of obj.players){
+            if (player.isLocalPlayer){
+                local_x = player.position.x;
+                local_y = player.position.y;
+                local_team = player.team;
+                break;
+            }
         }
     }
-    enemy_list = obj["enemy_list"];
-    healths = obj["healths"];
-    x_positions = obj["x_positions"];
-    y_positions = obj["y_positions"];
-    local_x = obj["local_x"];
-    local_y = obj["local_y"];
-    weapons = obj["weapon"];
-    ang_ys = obj["ang_y"];
-    local_angle_y = obj["local_ang_y"];
-    console.log(map_name);
-    console.log(local_player);
-/*
+
     clear_canvas();
     ctx.save();
-    update_map_data(map_name);
-
-    if(!local_player)
-        return;
-
-    local_x = ((local_player["pos_x"] - pos_x) / scale ) * ratio;
-    local_y = ((local_player["pos_y"] - pos_y) / -scale ) * ratio;
-
+    //update_map_data(map_name);
+    if(!local_x)
+       return;
+    local_x = ((local_x - pos_x) / scale ) * ratio;
+    local_y = ((local_y - pos_y) / -scale ) * ratio;
+    
     const image_scale = 1024 * ratio;
 
     ctx.translate(300, 300);
-    ctx.rotate((local_player["angle_y"] - 90) * Math.PI / 180);
+    ctx.rotate((local_yaw - 90) * Math.PI / 180);
     canvas.hidden = true;
     ctx.drawImage(image, -local_x, -local_y,  image_scale,  image_scale);
     ctx.globalCompositeOperation = "destination-in";
@@ -241,29 +233,24 @@ socket.on("updateData", function (event) {
     const now_ms = new Date().getTime();
     clearEnemyList();
 
-    for(const i in enemy_list) {
-        const mapped_x = ((enemy_list[i]["pos_x"] - pos_x) / scale) * ratio - local_x;
-        const mapped_y = ((enemy_list[i]["pos_y"] - pos_y) / -scale) * ratio  - local_y;
-        let col_red = (255 - 2.55 * enemy_list[i]["health"]);
-        let col_green = (2.55 * enemy_list[i]["health"]);
-        let col_blue = 0;
-        draw_entity(mapped_x,
-                    mapped_y,
-                    enemy_list[i]["health"],
-                    enemy_list[i]["last_place"],
-                    col_red, col_green, col_blue, 255,
-                    0, enemy_list[i]["is_defusing"],
-                    enemy_list[i]["weapon"],
-                    enemy_list[i]["angle_y"],
-                    local_player,
-                    local_x,
-                    local_y,
-                    enemy_list[i]["name"]);
-        addenemy(enemy_list[i]["name"], enemy_list[i]["health"], enemy_list[i]["weapon"]);
+    for(const player of obj.players) {
+        if(player.team !== local_team){
+            const mapped_x = ((player.position.x - pos_x) / scale) * ratio - local_x;
+            const mapped_y = ((player.position.y - pos_y) / -scale) * ratio  - local_y;
+            let col_red = (255 - 2.55 * player.health);
+            let col_green = (2.55 * player.health);
+            let col_blue = 0;
+            draw_entity(mapped_x,
+                        mapped_y,
+                        player.health,
+                        col_red, col_green, col_blue, 255,
+                        player.weapon_id,
+                        local_yaw,
+                        player.name);
+            addenemy(player.name, player.health, player.weapon);
+        }
     }
-
-
-    draw_local_entity(local_player["angle_y"] );
+    draw_local_entity(local_yaw);
     ctx.restore();
-*/
+    
 });

@@ -20,11 +20,11 @@ class Engine:
         return memory.read_ptr(x + 0x28 + 0x34 * index)
         
     def get_view_angle(self):
-        vec_angle = memory.read_ptr(self.clientState + offsets.dwClientState_ViewAngles)
+        #vec_angle = memory.read_ptr(self.clientState + offsets.dwClientState_ViewAngles)
         return Vector3(
-            float(memory.read(vec_angle, c_float)),
-            float(memory.read(vec_angle + 0x4, c_float)),
-            float(memory.read(vec_angle + 0x8, c_float))
+            float(memory.read(self.clientState + offsets.dwClientState_ViewAngles, c_float)),
+            float(memory.read(self.clientState + offsets.dwClientState_ViewAngles + 0x4, c_float)),
+            float(memory.read(self.clientState + offsets.dwClientState_ViewAngles + 0x8, c_float))
         )
 
     def get_map_name(self):

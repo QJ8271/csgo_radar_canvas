@@ -1,4 +1,4 @@
-import logging, sys, ctypes, time
+import logging, sys, ctypes,json
 sys.path.append("..")
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
@@ -47,7 +47,6 @@ def main_game_thread():
         if engine.is_in_game():
             try:
                 x = engine.get_view_angle()
-                print(x.y)
             except Exception as e:
                 print(e)
             if not previously_in_game:
@@ -130,20 +129,16 @@ def main_game_thread():
                         players_to_send.append(players[steam_id])
                 
             if len(players_to_send) > 0:
-                #socketio.emit('updateData', {'data': data})
                 data = Packet(players=players_to_send,status=Status(status="players_updated")).json()
-                #log(f'Data: {data}')
-                socketio.emit('updateData', {'data': data})
+                local_y = engine.get_view_angle()
+                socketio.emit('updateData', {"data":data,"local_yaw":local_y.y})
         else:
             if previously_in_game:
                 log("[+] Game ended!")
                 previously_in_game = False
-                data = Packet(status=Status(status="game_ended")).json()
-                #log(f'Data: {data}')
-                socketio.emit('updateData', {'data': data})
                 players = {}
 
-            time.sleep(3)
+            socketio.sleep(3)
             log("[+] Waiting for game to start...")
             continue
 
