@@ -165,14 +165,9 @@ function clearEnemyList() {
 
 image = new Image();
 image.src = base_data_path + '/maps/de_dust2/radar.png';
-let players = [];
-let healths = [];
-let x_positions = [];
-let y_positions = [];
 let local_x = 0;
 let local_y = 0;
-let weapons = [];
-let ang_ys = [];
+let weapons = 0;
 let local_player;
 let image_scale = 512;
 let local_team;
