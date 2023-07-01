@@ -49,8 +49,8 @@ function addenemy (name, health) {
 
 
 map_style.onchange = function(){
-    var map_name = dropdown.options[dropdown.selectedIndex].value;
-    var m_style = map_style.value;
+    map_name = dropdown.options[dropdown.selectedIndex].value;
+    m_style = map_style.value;
     prev_map_name = map_name;
    
     if(m_style == "classic"){
@@ -63,8 +63,8 @@ map_style.onchange = function(){
 }
 
 dropdown.onchange = function() { 
-    var map_name = dropdown.options[dropdown.selectedIndex].value;
-    var m_style = map_style.options[map_style.selectedIndex].value;
+    map_name = dropdown.options[dropdown.selectedIndex].value;
+    m_style = map_style.options[map_style.selectedIndex].value;
     if (prev_map_name != map_name) {
         prev_map_name = map_name;
        
@@ -169,6 +169,8 @@ let local_player;
 let image_scale = 512;
 let local_team;
 let local_yaw;
+let map_name;
+let m_style;
 
 var socket = io.connect();
 socket.on("updateData", function (event) {
@@ -221,9 +223,6 @@ socket.on("updateData", function (event) {
       // restore to default composite operation (is draw over current image)
     ctx.globalCompositeOperation = "source-over";
     canvas.hidden = false
-
-    
-    const now_ms = new Date().getTime();
     clearEnemyList();
 
     for(const player of obj.players) {

@@ -42,7 +42,7 @@ def main_game_thread():
     
     while True:
         
-        socketio.sleep(0.02) 
+        socketio.sleep(0.05) 
         engine = Engine()
         if engine.is_in_game():
             if not previously_in_game:
@@ -127,7 +127,7 @@ def main_game_thread():
                 previously_in_game = False
                 players = {}
 
-            socketio.sleep(3)
+            socketio.sleep(10)
             log("[+] Waiting for game to start...")
             continue
 

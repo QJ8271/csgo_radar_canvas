@@ -9,10 +9,10 @@
 
     <title>Radar</title>
 </head>
-<body style="background-color:grey">
+<body style="background-color:black">
     <div class="container" style="float:left;">
          <div class="row">       
-         <h2> Change Map </h2>   
+         <h2 style="color: red;">Change Map</h2>   
             <div class = "col-md-3">
                 <div>
                     <select  class="form-select" aria-label="Default select example" name="metric" id="metric">
@@ -41,7 +41,7 @@
         </div>
         <div class="row">
             <div class= "col-md-6">
-                <h2> Enemy Details</h2>
+                <h2 style="color: red;">Enemy Details</h2>
                 <ul class="list-group" id="enemy_list">
                     <li class="list-group-item"> Toby
                     <div class="progress">
@@ -55,7 +55,7 @@
             </div>
 
             <div class= "col-md-6">
-                <h2> Settings</h2>
+                <h2 style="color: red;"> Settings</h2>
                 <label for="radar_ratio" class="form-label">Radar Scale</label>              
                 <input type="range" onchange="update_radar_scale()" class="form-range" min=0 max=1 step=0.01 value= 0.5 id="radar_scale">
                 <label for="player_size" class="form-label">Player Dot Size</label>              
