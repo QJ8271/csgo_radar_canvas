@@ -42,7 +42,7 @@ def main_game_thread():
     
     while True:
         
-        socketio.sleep(0.002) 
+        socketio.sleep(0.02) 
         engine = Engine()
         if engine.is_in_game():
             if not previously_in_game:
